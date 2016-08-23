@@ -17,9 +17,10 @@ class Auth
 	const API_PRONDETECT_URL = 'http://service.image.myqcloud.com/detection/pornDetect';    
 		
     // 以下部分请您根据在qcloud申请到的项目id和对应的secret id和secret key进行修改
-    const APPID = 10030012;
-    const SECRET_ID = 'AKID1bvHeG324hT7wngYmi3CSfBLmnzt49Ze';
-    const SECRET_KEY = '6GjtLYAYAZqiTirn78uT8dKvb9xYX6o2';
+    const APPID = 'YOUR-APPID';
+    const SECRET_ID = 'YOUR-S-ID';
+    const SECRET_KEY = 'YOUR-S-KEY';
+    const BUCKET_NAME = 'YOUR-BUCKET-NAME';
 
     /**
      * 支持自定义fileid签名函数
@@ -198,9 +199,9 @@ class Auth
     
     
 }	
-		$bucket = 'test2';
+		$bucket = Auth::BucketName;
 		$userid = 0;
-		$fileid = 'sample'.time();                              // 自定义文件名
+		$fileid = 'sample'.time();// 自定义文件名
         //生成新的上传签名
         $url = Auth::generateResUrl($bucket, $userid, $fileid);
         $expired = time() + 999;
