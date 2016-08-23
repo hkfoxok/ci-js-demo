@@ -1,5 +1,4 @@
 <?php
-#include 'conf.php'
 namespace Tencentyun;
 
 class Auth
@@ -199,7 +198,7 @@ class Auth
     
     
 }	
-		$bucket = Auth::BucketName;
+		$bucket = Auth::BUCKET_NAME;
 		$userid = 0;
 		$fileid = 'sample'.time();// 自定义文件名
         //生成新的上传签名
