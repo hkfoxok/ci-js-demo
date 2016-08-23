@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+<title>腾讯云万象优图 - 示例程序</title>
+<script type="text/javascript" src="./jquery.min.js"></script>
+<script type="text/javascript" src="./jquery.form.min.js"></script>
+</head>
+<body>
+<div>
+    <h2>腾讯云万象优图 - 示例程序</h2>
+    <form id="uploadForm">
+        <input type="file" name="FileContent"></input>
+        <input id="subbtn" type="submit">
+    </form>
+	
+	<br>
+	
+	<form id="uploadBase64">
+        <input type="file" name="FileContent2"></input>
+		<input type="hidden" value="" id="file-base64"></input>
+        <input id="subbtn2" type="button" value="base64提交">
+    </form>
+	<div id="downloadRet" style="display:none">
+         <h3>下载链接</h3>
+         <span id="downloadUrl"></span><input id="downloadBtn" type="button" value="下载"><br/>
+         <img id="downloadImg" src=""></img>
+         <h3>文件ID</h3>
+         <div id="fileid"></div>
+         <h3>管理URL</h3>
+         <span id="url"></span>
+         <span id="imgInfo"></span>
+     </div>
+
+</div>
+
+
+<script type="text/javascript">
+
+$('input[name=FileContent]').change(function () {
+    initUploadForm();
+});
+
+$('input[name=FileContent2]').change(function (e) {
+	
+	var self = $(this);
+	var file = e.target.files[0];
+	var reader = new FileReader();
+	reader.readAsDataURL(file);
+	reader.onload = function(e){
+		$('#file-base64').val(this.result);
+	}
+});
+
+$('body').on('click', '#downloadBtn', function(){
+    $('#downloadImg').attr('src', $('#downloadUrl').text());
+	return false;
+});
+
+$('body').on('click', '#subbtn2', function(){
+    base64Post()
+	return false;
+});
+
+
+function initUploadForm () {
+    // 请将以下获取签名的链接换成您部署好的服务端http url
+    // 建议通过业务登陆态检查来增强安全性，避免签名被非法获取
+    $.getJSON('http://127.0.0.1/ci/php/auth.php', function(data) {
+        var sign = data.sign,
+            url = data.url + '?sign=' + encodeURIComponent(sign);
+
+        var options = { 
+                    type: 'post',
+                    url: url,
+                    dataType: 'json',
+            success:function(ret) { 
+                $('#downloadUrl').html(ret.data.download_url);
+                $('#fileid').text(ret.data.fileid);
+                $('#url').text(ret.data.url);
+                $('#downloadRet').show();
+            },
+            error:function (ret) {
+                alert(ret.responseText);
+            }
+        }; 
+
+        // pass options to ajaxForm 
+        $('#uploadForm').ajaxForm(options);
+    });
+}
+
+function base64Post () {
+    // 请将以下获取签名的链接换成您部署好的服务端http url
+    // 建议通过业务登陆态检查来增强安全性，避免签名被非法获取
+    $.getJSON('http://127.0.0.1/ci/php/auth.php', function(data) {
+        var sign = data.sign,
+            url = data.url + '?sign=' + encodeURIComponent(sign);
+		
+		var formData = new FormData();
+		var str = $('#file-base64').val();
+		formData.append('FileContent', str);
+		
+        var options = {
+			type: 'post',
+			url: url,
+			dataType: "JSON",
+			data:formData,
+			processData: false,  // 告诉jQuery不要去处理发送的数据
+			contentType: false,   // 告诉jQuery不要去设置Content-Type请求头
+            success:function(ret) { 
+                $('#downloadUrl').html(ret.data.download_url);
+                $('#fileid').text(ret.data.fileid);
+                $('#url').text(ret.data.url);
+                $('#downloadRet').show();
+            },
+            error:function (ret) {
+                alert(ret.responseText);
+            }
+        }; 
+
+        $.ajax(options);
+    });
+}
+
+</script>
+</body>
+</html>
