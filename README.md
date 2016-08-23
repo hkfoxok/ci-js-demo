@@ -1,5 +1,5 @@
 # ci-js-demo
-万象优图web端demo
+万象优图web端上传demo
 
 ##如何运行？
 
